@@ -80,7 +80,6 @@ const LeftMenu = () => {
               </li>
               ))
               }
-              <li><a>Download</a></li>
             </ul>
             }
     </div>

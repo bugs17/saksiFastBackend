@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,52 +7,51 @@ datasource db {
   url      = "file:./database.db"
 }
 
-
-
 model User {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  username String
-  password String
-  role String
+  username  String
+  password  String
+  role      String
 }
 
-
 model Distrik {
-  id Int @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
   namaDistrik String
   kampung     Kampung[]
 }
 
 model Kampung {
-  id Int @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  namaKampung String
-  distrikId Int
-  distrik Distrik @relation(fields: [distrikId], references: [id], onDelete: Cascade)
-  tps Tps[]
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  namaKampung String @unique
+  distrikId   Int
+  distrik     Distrik  @relation(fields: [distrikId], references: [id], onDelete: Cascade)
+  tps         Tps[]
 }
 
 model Saksi {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  username String
-  password String @unique
-  saksi Tps?
+  nama      String
+  username  String   @unique
+  password  String
+  tps       Tps?
 }
 
 model Tps {
-  id Int @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  nomorTps String
-  kampungId Int
-  kampung Kampung @relation(fields: [kampungId], references: [id], onDelete: Cascade)
-  saksiId Int @unique
-  saksi Saksi @relation(fields: [saksiId], references: [id], onDelete: Cascade)
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  nomorTps    String
+  kampungId   Int
+  jumlahSuara Int      @default(0)
+  saksiId     Int      @unique
+  saksi       Saksi    @relation(fields: [saksiId], references: [id], onDelete: Cascade)
+  kampung     Kampung  @relation(fields: [kampungId], references: [id], onDelete: Cascade)
 }

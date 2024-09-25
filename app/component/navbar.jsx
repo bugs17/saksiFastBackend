@@ -68,6 +68,7 @@ const Navbar = () => {
             <ul className="menu menu-horizontal px-1 flex gap-4">
               <li><Link className={pathname === '/admin-side/home' && 'active'} href={'/admin-side/home'}>Home</Link></li>
               <li><Link className={pathname === '/admin-side/add-saksi' && 'active'} href={'/admin-side/add-saksi'}>Tambah-saksi</Link></li>
+              <li><Link className={pathname === '/admin-side/laporan' && 'active'} href=''>Laporan</Link></li>
             </ul>
         </div>
         <div className="navbar-end">
