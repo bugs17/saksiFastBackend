@@ -11,7 +11,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html data-theme='cyberpunk' className="bg-[#fcf248]" lang="id">
+    <html data-theme='retro' className="bg-[#ece3ca]" lang="id">
       <body>
         {children}
       </body>

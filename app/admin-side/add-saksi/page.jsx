@@ -18,12 +18,21 @@ const Settings = () => {
   const [password, setPassword] = useState('')
 
   const [listSaksi, setListSaksi] = useState([])
-
   const [sukesesMsg, setSuksesMsg] = useState(false)
 
+  const [detailSaksi, setDetailSaksi] = useState({
+    nama: null,
+    distrik: null,
+    kampung: null,
+    noTps:null,
+    username: null,
+    password:null
+  })
 
 
-  // pengambilan data distrik
+  // ############ useEffect #################
+
+  // pengambilan data distrik & datasaksi yang sudah ada di DB
   useEffect(() => {
     window.scrollTo(0, 0);
     const usernameStored = localStorage.getItem('username');
@@ -41,6 +50,7 @@ const Settings = () => {
         })
         if (response.status === 200) {
           setDistrik(response.data.distrik)
+          setListSaksi(response.data.saksi)
         }
       } catch (error) {
         console.log(error)
@@ -85,17 +95,21 @@ const Settings = () => {
   }, [selectedDistrik])
 
 
+
+  // ############# function #################
+
+  // fungction set distrik
   const handleSelectDistrik = (e) => {
     setSelectedDistrik(e.target.value)
-    console.log(e.target.value)
     // saat distrik di pilih dan request ke backend untuk mengambil data kampung berdasarkan distriknya
   }
   
+  // function set kampung
   const handleSelectKampung = (e) => {
     setSelectedKampung(e.target.value)
-    console.log(e.target.value)
   }
 
+  // functon menambahkan saksi baru
   const handleSubmit = async () => {
     if (selectedDistrik === '' || selectedKampung === '' || nama === '' || noTps === '' || username === '' || password === '') {
       return alert("Lengkapi data saksi sebelum kirim 🥱")
@@ -125,14 +139,15 @@ const Settings = () => {
       })
 
       if (response.status === 200) {
-        setListSaksi([response.data.saksi])
+        setListSaksi((prevData) => [...prevData, response.data.saksi])
         setNama('')
         setNoTps('')
         setUsername('')
         setPassword('')
         setSelectedDistrik('')
         setSelectedKampung('')
-        console.log(response.data.saksi)
+        setKampung([])
+        setSuksesMsg(true)
       }
     } catch (error) {
       alert('Gagal menambahkan saksi. coba lagi! jika terus terjadi segera hubungi admin')
@@ -142,6 +157,80 @@ const Settings = () => {
 
     
   }
+
+  // function get detail saksi
+  const getDetailSaksi = async (e) => {
+    const namasaksi = e.target.innerText;
+    if (namasaksi === '') {
+      return
+    }
+    try {
+      setDetailSaksi({nama:null})
+      const usernameStored = localStorage.getItem('username');
+      const passwordStored = localStorage.getItem('password');
+      const url = 'http://localhost:3000/api/admin/detail-saksi'
+      const data = {
+        'namasaksi':namasaksi
+      }
+      const response = await axios.post(url, data, {
+        headers:{
+          'Content-Type':'application/json',
+          'usernameAdmin':usernameStored,
+          'passwordAdmin':passwordStored,
+          'role':'admin'
+        }
+      })
+      if (response.status === 200) {
+        setDetailSaksi({
+          nama:response.data.detailSaksi.nama,
+          distrik:response.data.distrik.distrik.namaDistrik,
+          kampung:response.data.distrik.namaKampung,
+          noTps:response.data.detailSaksi.tps.nomorTps,
+          username:response.data.detailSaksi.username,
+          password:response.data.detailSaksi.password
+        })
+      }
+    } catch (error) {
+      alert('Terjadi error di server coba lagi')
+    }
+  }
+
+
+  // hapus saksi
+  const hapusSaksi = async (namasaksi) => {
+    if (namasaksi === '') {
+      return
+    }
+    try {
+      const usernameStored = localStorage.getItem('username');
+      const passwordStored = localStorage.getItem('password');
+      const url = 'http://localhost:3000/api/admin/hapus-saksi'
+      const data = {
+        'namasaksi':namasaksi
+      }
+      const response = await axios.post(url, data, {
+        headers:{
+          'Content-Type':'application/json',
+          'usernameAdmin':usernameStored,
+          'passwordAdmin':passwordStored,
+          'role':'admin'
+        }
+      })
+      if (response.status === 200) {
+        setListSaksi([...response.data.listSaksi])
+        console.log(response.data.listSaksi)
+      }
+    } catch (error) {
+      console.log("Error server ", error)
+    }
+  }
+
+
+
+
+
+
+
 
   return (
     <div className='flex h-screen w-screen   '>
@@ -155,7 +244,10 @@ const Settings = () => {
                 {listSaksi.length > 0 
                 &&
                 listSaksi.map((item, index) => (
-                  <li key={index}><span className='cursor-pointer'>{item.nama}</span></li>
+                  <li key={index} className='flex flex-row justify-between'>
+                    <span onClick={getDetailSaksi} className={`cursor-pointer ${item.nama === detailSaksi.nama && 'active'}`}>{item.nama}</span>
+                    <span onClick={() => hapusSaksi(item.nama)} className='text-red-500 hover:bg-red-500 hover:text-white '>x</span>
+                  </li>
                 ))
                 }
                 
@@ -212,18 +304,30 @@ const Settings = () => {
               <button onClick={handleSubmit} className="btn btn-sm btn-outline md:mt-5">Tambah</button>
             }
           </div>
-          <div className="toast toast-bottom toast-center">
-              <div className="alert alert-error">
-                <span>data</span>
-                <span onClick={() => setSuksesMsg(false)} className="cursor-pointer">X</span>
+          {sukesesMsg &&
+            <div className="toast toast-bottom toast-center">
+                <div className="alert alert-primary">
+                  <span>Saksi berhasil di tambahkan ✅</span>
+                  <span onClick={() => setSuksesMsg(false)} className="cursor-pointer">X</span>
 
-              </div>
-          </div>
-          </div>
+                </div>
+            </div>
+          }
+        </div>
 
         {/* show saksi */}
-        <div className='w-1/6 shadow overflow-y-scroll'>
-
+        <div className='w-1/6 shadow max-w-lg overflow-y-scroll md:pt-5 md:pl-3'>
+          {detailSaksi.nama !== null &&
+            <div className='flex flex-col gap-3'>
+              <span className='text-xs text-slate-400'>Nama: <span className='text-black'>{detailSaksi.nama}</span></span>
+              <span className='text-xs text-slate-400'>Distrik: <span className='text-black'>{detailSaksi.distrik}</span></span>
+              <span className='text-xs text-slate-400'>Kampung: <span className='text-black'>{detailSaksi.kampung}</span></span>
+              <span className='text-xs text-slate-400'>No TPS: <span className='text-black'>{detailSaksi.noTps}</span></span>
+              <span className='text-xs text-slate-400'>Username: <span className='text-black'>{detailSaksi.username}</span></span>
+              <span className='text-xs text-slate-400'>Password: <span className='text-black'>{detailSaksi.password}</span></span>
+              
+            </div>
+          }
         </div>
 
     </div>

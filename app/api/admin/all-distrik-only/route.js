@@ -27,6 +27,7 @@ export const GET = async (req) => {
     }
 
     let distrik;
+    let saksi;
 
     // mengambill semua distrik dan kampungnya
     try {
@@ -40,7 +41,15 @@ export const GET = async (req) => {
         return NextResponse.json({'message':'Internal server error'}, {status:500})
     }
 
+    // mengabil data saksi kalau ada
+    try {
+        saksi = await prisma.saksi.findMany()
+    } catch (error) {
+        console.log(error)
+        return NextResponse.json({'message':'Internal server error'}, {status:500})
+    }
+
     
 
-    return NextResponse.json({"distrik":distrik}, {status:200})
+    return NextResponse.json({"distrik":distrik, "saksi":saksi}, {status:200})
 }

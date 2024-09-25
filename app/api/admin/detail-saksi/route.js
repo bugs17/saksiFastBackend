@@ -1,22 +1,18 @@
 import { prisma } from "@/app/lib/db";
 import { NextResponse } from "next/server"
 
+
 export const POST = async (req) => {
 
-    const headers = req.headers;
     const body = await req.json()
+    const nama = body.namasaksi
 
-    const noTps = body.noTps
-    const nama = body.nama
-    const distrik = body.distrik
-    const kampung = body.kampung
-    const username = body.username
-    const password = body.password
-
-
+    const headers = req.headers;
     const usernameAdmin = headers.get('usernameAdmin')
     const passwordAdmin = headers.get('passwordAdmin')
     const role = headers.get('role')
+
+
     // mengambil admin user & validasi credential
     try {
         const user = await prisma.user.findFirst({
@@ -31,35 +27,38 @@ export const POST = async (req) => {
         return NextResponse.json({'message':'Unauthorized'}, {status:401})
     }
 
-    let saksi;
-
-    // create saksi
+    let detailSaksi;
+    // mengambil detail data saksi
     try {
-        saksi = await prisma.saksi.create({
-            data: {
-                username:username,
-                password:password,
-                nama:nama,
-                tps:{
-                    create:{
-                        nomorTps:noTps,
-                        kampung:{
-                            connect:{
-                                namaKampung:kampung
-                            }
-                        }
-                    }
-                }
+        detailSaksi = await prisma.saksi.findFirst({
+            where:{
+                nama:nama
+            },
+            include:{
+                tps:true
             }
-          });
-        
+        })
     } catch (error) {
-        
-        console.log("Error message", error)
         return NextResponse.json({'message':'Internal server error'}, {status:500})
     }
 
+    let distrik;
+    // mengambil data distrik
+    try {
+        distrik = await prisma.kampung.findFirst({
+            where:{
+                id:detailSaksi.tps.kampungId
+            },
+            include:{
+                distrik:true
+            }
+        })
+    } catch (error) {
+        return NextResponse.json({'message':'Internal server error'}, {status:500})
+    }
+
+    detailSaksi.tps.nomorTps
 
 
-    return NextResponse.json({"saksi":saksi}, {status:200})
+    return NextResponse.json({detailSaksi, distrik}, {status:200})
 }

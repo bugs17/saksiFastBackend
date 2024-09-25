@@ -36,13 +36,11 @@ export default function Login() {
       if (response.status === 200) {
         localStorage.setItem('username', response.data.username);
         localStorage.setItem('password', response.data.password);
-        console.log('Redirecting to dashboard...');
+
         router.push('/admin-side/home')
       }
     } catch (error) {
       setErrorMsg(error.response.data.message)
-      setLoading(false)
-    }finally{
       setLoading(false)
     }
   }
