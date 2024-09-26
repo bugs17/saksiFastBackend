@@ -1,10 +1,15 @@
 import axios from 'axios'
+import { useAtom } from 'jotai'
 import React, { useEffect, useState } from 'react'
+import { distrikorkampung, menuTerpilih } from '../lib/globalState'
 
 const LeftMenu = () => {
 
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState([])
+
+  const [menu, setMenu] = useAtom(menuTerpilih)
+  const [kampungordistrik, setKampungordistrik] = useAtom(distrikorkampung)
 
 
 
@@ -37,6 +42,21 @@ const LeftMenu = () => {
     fetchDistrik()
   }, [])
 
+  const selectDistrik = (distrik) => {
+    setMenu(distrik)
+    setKampungordistrik('distrik')
+  }
+  
+  const selectKampung = (kampung) => {
+    setMenu(kampung)
+    setKampungordistrik('kampung')
+  }
+  
+  const selectKabupaten = (kabupaten) => {
+    setMenu(kabupaten)
+    setKampungordistrik('kabupaten')
+  }
+
 
   return (
     <div className='flex flex-col w-auto overflow-x-auto h-full'>
@@ -51,22 +71,22 @@ const LeftMenu = () => {
             </div>
             :
             <ul className="menu bg-base-200 rounded-box w-72 ">
-              <li><a className='active'>Total kabupaten</a></li>
+              <li><span onClick={() => selectKabupaten('kabupaten')} className={`${menu === 'kabupaten' & kampungordistrik === 'kabupaten' && 'active'}`}>Total kabupaten</span></li>
               
               {data.length > 0 &&
               data.map((item) => (
-                <li>
+                <li key={item.id}>
                 <details close>
                   <summary>{item.namaDistrik}</summary>
                   <ul>
-                    <li><a>Total Distrik {item.namaDistrik}</a></li>
+                    <li><span className={`${menu === item.namaDistrik & kampungordistrik === 'distrik' && 'active'}`} onClick={() => selectDistrik(item.namaDistrik)}>Total Distrik {item.namaDistrik}</span></li>
                     {item.kampung.length > 0 &&
                     item.kampung.map((itemKampung) => (
-                      <li>
+                      <li key={itemKampung.id}>
                       <details close>
                         <summary>{itemKampung.namaKampung}</summary>
                         <ul>
-                          <li><a>Total Kampung {itemKampung.namaKampung}</a></li>
+                          <li><span className={`${menu === itemKampung.namaKampung & kampungordistrik === 'kampung' && 'active'}`}  onClick={() => selectKampung(itemKampung.namaKampung)}>Total Kampung {itemKampung.namaKampung}</span></li>
                           <li><a>TPS 1</a></li>
                           <li><a>TPS 2</a></li>
                         </ul>

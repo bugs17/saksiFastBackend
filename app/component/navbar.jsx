@@ -11,6 +11,8 @@ const Navbar = () => {
     const pathname = usePathname()
     const router = useRouter()
 
+    
+
     const getExpiredDate = () => {
         const date = new Date();
         date.setDate(date.getDate() - 1); // Mengurangi satu hari
@@ -68,7 +70,8 @@ const Navbar = () => {
             <ul className="menu menu-horizontal px-1 flex gap-4">
               <li><Link className={pathname === '/admin-side/home' && 'active'} href={'/admin-side/home'}>Home</Link></li>
               <li><Link className={pathname === '/admin-side/add-saksi' && 'active'} href={'/admin-side/add-saksi'}>Tambah-saksi</Link></li>
-              <li><Link className={pathname === '/admin-side/laporan' && 'active'} href=''>Laporan</Link></li>
+              <li><Link className={pathname === '/admin-side/aduan' && 'active'} href='/admin-side/aduan'>Aduan</Link></li>
+              <li><Link className={pathname === '/admin-side/laporan' && 'active'} href=''>Download</Link></li>
             </ul>
         </div>
         <div className="navbar-end">

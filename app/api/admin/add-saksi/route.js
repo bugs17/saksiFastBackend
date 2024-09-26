@@ -59,7 +59,5 @@ export const POST = async (req) => {
         return NextResponse.json({'message':'Internal server error'}, {status:500})
     }
 
-
-
     return NextResponse.json({"saksi":saksi}, {status:200})
 }

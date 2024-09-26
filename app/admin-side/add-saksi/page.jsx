@@ -233,7 +233,7 @@ const Settings = () => {
 
 
   return (
-    <div className='flex h-screen w-screen   '>
+    <div className='flex h-screen w-screen'>
 
       {/* list saksi */}
         <div className='w-1/6 shadow overflow-y-scroll bg-base-200'>
@@ -264,7 +264,7 @@ const Settings = () => {
             <span className='text-primary'>Nama</span>
             <input onChange={(e) => setNama(e.target.value)} value={nama} type="text" className="grow" placeholder="Nama saksi" />
           </label>
-          <select disabled={distrik.length === 0} onChange={handleSelectDistrik} value={selectedDistrik}  className="select select-bordered w-full max-w-xs select-sm">
+          <select disabled={distrik.length === 0} onChange={handleSelectDistrik} className="select select-bordered w-full max-w-xs select-sm">
             <option disabled selected>Distrik?</option>
             {distrik.length > 0 &&
             distrik.map((item) => (
@@ -274,7 +274,7 @@ const Settings = () => {
             
           </select>
 
-          <select disabled={loadingKampung} onChange={handleSelectKampung} value={selectedKampung} className="select select-bordered w-full max-w-xs select-sm">
+          <select disabled={loadingKampung} onChange={handleSelectKampung} className="select select-bordered w-full max-w-xs select-sm">
             <option disabled selected>Kampung?</option>
             {kampung.length > 0 &&
             kampung.map((item) => (

@@ -51,6 +51,10 @@ model Tps {
   nomorTps    String
   kampungId   Int
   jumlahSuara Int      @default(0)
+  aduan       Boolean @default(false)
+  keteranganAduan       String?
+  fotoAduan   String?
+  urlFotoSuara   String?
   saksiId     Int      @unique
   saksi       Saksi    @relation(fields: [saksiId], references: [id], onDelete: Cascade)
   kampung     Kampung  @relation(fields: [kampungId], references: [id], onDelete: Cascade)
