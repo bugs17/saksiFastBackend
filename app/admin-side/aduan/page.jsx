@@ -7,7 +7,8 @@ import React, { useEffect, useState } from 'react'
 const Aduan = () => {
 
     const [listAduan, setListAduan] = useState([])
-    const [aduan, setAduan] = useState([])
+    const [aduan, setAduan] = useState(null)
+    const [saksi, setSaksi] = useState(null)
 
     useEffect(() => {
         const usernameStored = localStorage.getItem('username');
@@ -26,14 +27,19 @@ const Aduan = () => {
                 })
                 if (response.status === 200) {
                     setListAduan([...response.data.aduan])
+                    console.log(response.data.aduan)
                 }
             } catch (error) {
                 console.log("Erooorrr", error)
             }
         }
         getAllAduan()
-        console.log(usernameStored, passwordStored)
     }, [])
+
+    const setDetailSaksiDanAduan = (item) => {
+        setSaksi(item.saksi)
+        setAduan(item)
+    }
 
   return (
     <div className='flex h-screen w-screen'>
@@ -44,8 +50,8 @@ const Aduan = () => {
               <ul>
                 {listAduan.length > 0 &&
                     listAduan.map((item) => (
-                        <li key={item.id} className='flex flex-row justify-between'>
-                            <span>Nama Saksi</span>
+                        <li key={item.id} className='flex flex-row justify-between '>
+                            <span className={`${saksi?.nama === item.saksi?.nama && 'active'}`} onClick={() => setDetailSaksiDanAduan(item)}>{item.saksi.nama}</span>
                         </li>
                     ))
                     
@@ -57,23 +63,32 @@ const Aduan = () => {
         </div>
 
         <div className='w-4/6 flex flex-col justify-start gap-10 items-center md:pt-16 md:pb-16 md:px-10 overflow-y-scroll'>
-            {aduan.length > 0 && 
+            {aduan !== null && 
             <article class="prose flex flex-col gap-2">
                 <h1 className='text-primary'>Keterangan:</h1>
                 <p>
-                    For years parents have espoused the health benefits of eating garlic bread with cheese to their
-                    children, with the food earning such an iconic status in our culture that kids will often dress
-                    up as warm, cheesy loaf for Halloween.
+                    {aduan.keteranganAduan}
                 </p>
 
                 <div className=' self-center border-2 border-black mt-5'>
-                    <Image alt='gambar-aduan' height={500} width={500} src={'https://diskominfo.patikab.go.id/asset/foto_berita/SPAN_lapor.jpg'} />
+                    {aduan.fotoAduan !== null &&
+                        <Image alt='gambar-aduan' height={500} width={500} src={aduan.fotoAduan} />
+                    }
                 </div>
                 
             </article>}
         </div>
 
-        <div className='w-1/6 shadow max-w-lg overflow-y-scroll md:pt-5 md:pl-3'></div>
+        <div className='w-1/6 shadow max-w-lg overflow-y-scroll md:pt-5 md:pl-3'>
+            {saksi !== null &&
+                <div className='flex flex-col gap-3'>
+                <span className='text-xs text-slate-400'>Nama: <span className='text-black'>{saksi.nama}</span></span>
+                <span className='text-xs text-slate-400'>Distrik: <span className='text-black'>{saksi.tps.kampung.distrik.namaDistrik}</span></span>
+                <span className='text-xs text-slate-400'>Kampung: <span className='text-black'>{saksi.tps.kampung.namaKampung}</span></span>
+                <span className='text-xs text-slate-400'>No TPS: <span className='text-black'>{saksi.tps.nomorTps}</span></span>
+                </div>
+            }
+        </div>
     </div>
   )
 }

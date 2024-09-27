@@ -32,8 +32,25 @@ export const GET = async (req) => {
                 aduan:true
             },
             include:{
-                saksi:true,
-                kampung:true
+                saksi:{
+                    include:{
+                        tps:{
+                            include:{
+                                kampung:{
+                                    include:{
+                                        distrik:true
+                                    }
+                                }
+                            }
+                        },
+
+                    }
+                },
+                kampung:{
+                    include:{
+                        distrik:true
+                    }
+                }
                 }
         })
     } catch (error) {

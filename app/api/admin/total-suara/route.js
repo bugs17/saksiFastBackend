@@ -20,7 +20,7 @@ const getTotalSuaraKabupaten = async () => {
         });
 
         const updateTime = latestUpdate ? latestUpdate.updatedAt : null;
-        return NextResponse.json({"jumlah":totalSuaraKabupaten._sum.jumlahSuara || 0,"title":"Kabupaten", "updateTime":updateTime})
+        return NextResponse.json({"jumlah":totalSuaraKabupaten._sum.jumlahSuara || 0,"title":"Kabupaten", "updateTime":updateTime}, {status:200})
     } catch (error) {
         console.log("Terjadi error query", error)
         return NextResponse.json({'message':'Internal server error'}, {status:500})
@@ -58,7 +58,7 @@ const getTotalSuaraDistrik = async (distrikParam) => {
 
         const updateTime = latestUpdate ? latestUpdate.updatedAt : null;
 
-        return NextResponse.json({"jumlah":jumlahSuara._sum.jumlahSuara || 0, "title":`Distrik ${distrik.namaDistrik}`, "updateTime":updateTime})
+        return NextResponse.json({"jumlah":jumlahSuara._sum.jumlahSuara || 0, "title":`Distrik ${distrik.namaDistrik}`, "updateTime":updateTime},{status:200})
     } catch (error) {
         console.log("Terjadi error query", error)
         return NextResponse.json({'message':'Internal server error'}, {status:500})
@@ -88,6 +88,35 @@ const getTotalSuaraKampung = async (kampungParam) => {
 
     const updateTime = latestUpdate ? latestUpdate.updatedAt : null;
     return NextResponse.json({"jumlah":jumlahSuara._sum.jumlahSuara || 0, "title": `Kampung ${kampungParam}`, "updateTime":updateTime})
+}
+
+const getTotalSuaraTps = async (idTps) => {
+    const id = parseInt(idTps)
+    try {
+        const totalSuara = await prisma.tps.findFirst({
+            where:{
+                id:id
+            },
+            include:{
+                kampung:true
+            }
+        })
+        const latestUpdate = await prisma.tps.findFirst({
+            orderBy: {
+              updatedAt: 'desc', // Mengurutkan berdasarkan updatedAt dari yang terbaru
+            },
+            select: {
+              updatedAt: true,  // Hanya mengambil kolom updatedAt
+            },
+        });
+
+        const updateTime = latestUpdate ? latestUpdate.updatedAt : null;
+
+        return NextResponse.json({"jumlah":totalSuara.jumlahSuara,"title":`TPS ${totalSuara.nomorTps} Kampung ${totalSuara.kampung.namaKampung}`,"updateTime":updateTime}, {status:200})
+    } catch (error) {
+        console.log("Terjadi error query", error)
+        return NextResponse.json({'message':'Internal server error'}, {status:500})
+    }
 }
 
 export const POST = async (req) => {
@@ -123,7 +152,8 @@ export const POST = async (req) => {
         return getTotalSuaraDistrik(menu)
     }else if (kampungordistrik === 'kampung') {
         return getTotalSuaraKampung(menu)
+    }else if (kampungordistrik === 'tps') {
+        return getTotalSuaraTps(menu)
     }
-
 
 }

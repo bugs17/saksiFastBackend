@@ -2,9 +2,13 @@ import { prisma } from "@/app/lib/db";
 import { NextResponse } from "next/server"
 
 
-export const GET = async (req) => {
+export const POST = async (req) => {
 
     const headers = req.headers;
+    const body = await req.json()
+
+    const distrik = body.distrik
+    const kampung = body.kampung
 
     const username = headers.get('username')
     const password = headers.get('password')
@@ -26,26 +30,33 @@ export const GET = async (req) => {
         return NextResponse.json({'message':'Unauthorized'}, {status:401})
     }
 
-    let distrik;
+    let tps;
+    let kampungReady;
 
-    // mengambill semua distrik dan kampungnya
     try {
-        distrik = await prisma.distrik.findMany({
-            include:{
-                kampung:{
-                    include:{
-                        tps:true
-                    }
-                },
-
+        kampungReady = await prisma.kampung.findFirst({
+            where:{
+                namaKampung:kampung,
+                distrik:{
+                    namaDistrik:distrik
+                }
             }
         })
     } catch (error) {
-        console.log(error)
+        return NextResponse.json({'message':'Internal server error'}, {status:500})
+    }
+
+    try {
+        tps = await prisma.tps.findMany({
+            where:{
+                kampungId:kampungReady.id
+            }
+        })
+    } catch (error) {
         return NextResponse.json({'message':'Internal server error'}, {status:500})
     }
 
     
 
-    return NextResponse.json({"distrik":distrik}, {status:200})
+    return NextResponse.json({"tps":tps}, {status:200})
 }

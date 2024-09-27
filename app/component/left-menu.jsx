@@ -57,6 +57,11 @@ const LeftMenu = () => {
     setKampungordistrik('kabupaten')
   }
 
+  const selectTps = (tps) => {
+    setMenu(tps)
+    setKampungordistrik('tps')
+  }
+
 
   return (
     <div className='flex flex-col w-auto overflow-x-auto h-full'>
@@ -87,8 +92,11 @@ const LeftMenu = () => {
                         <summary>{itemKampung.namaKampung}</summary>
                         <ul>
                           <li><span className={`${menu === itemKampung.namaKampung & kampungordistrik === 'kampung' && 'active'}`}  onClick={() => selectKampung(itemKampung.namaKampung)}>Total Kampung {itemKampung.namaKampung}</span></li>
-                          <li><a>TPS 1</a></li>
-                          <li><a>TPS 2</a></li>
+                          {itemKampung.tps.length > 0 &&
+                            itemKampung.tps.map((item) => (
+                            <li key={item.id}><span onClick={() => selectTps(item.id)}>TPS {item.nomorTps}</span></li>
+                            ))
+                          }
                         </ul>
                       </details>
                     </li>

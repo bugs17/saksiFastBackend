@@ -201,33 +201,36 @@ const Settings = () => {
     if (namasaksi === '') {
       return
     }
-    try {
-      const usernameStored = localStorage.getItem('username');
-      const passwordStored = localStorage.getItem('password');
-      const url = 'http://localhost:3000/api/admin/hapus-saksi'
-      const data = {
-        'namasaksi':namasaksi
-      }
-      const response = await axios.post(url, data, {
-        headers:{
-          'Content-Type':'application/json',
-          'usernameAdmin':usernameStored,
-          'passwordAdmin':passwordStored,
-          'role':'admin'
+
+    const confirmed = window.confirm(`Apakah kamu yakin ingin menghapus saksi ${namasaksi}? Hasil suara yang telah di input oleh ${namasaksi} akan ikut terhapus. Periksa datanya sebelum mengahpus!`);
+
+
+    if (confirmed) {
+      try {
+        const usernameStored = localStorage.getItem('username');
+        const passwordStored = localStorage.getItem('password');
+        const url = 'http://localhost:3000/api/admin/hapus-saksi'
+        const data = {
+          'namasaksi':namasaksi
         }
-      })
-      if (response.status === 200) {
-        setListSaksi([...response.data.listSaksi])
-        console.log(response.data.listSaksi)
+        const response = await axios.post(url, data, {
+          headers:{
+            'Content-Type':'application/json',
+            'usernameAdmin':usernameStored,
+            'passwordAdmin':passwordStored,
+            'role':'admin'
+          }
+        })
+        if (response.status === 200) {
+          setListSaksi([...response.data.listSaksi])
+          console.log(response.data.listSaksi)
+        }
+      } catch (error) {
+        console.log("Error server ", error)
       }
-    } catch (error) {
-      console.log("Error server ", error)
     }
+    
   }
-
-
-
-
 
 
 

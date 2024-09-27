@@ -1,7 +1,9 @@
 import React from 'react'
 
+
 const TotalKabupaten = ({jumlah, title, updateTime, loading}) => {
 
+  
   
   return (
     // <div className='w-80 m-10 ' >
@@ -21,6 +23,7 @@ const TotalKabupaten = ({jumlah, title, updateTime, loading}) => {
             <div className="stat items-center justify-center flex flex-col">
                 <div className="stat-title ">Total suara {title}</div>
                 <div className="stat-value font-bold text-9xl text-primary">{jumlah}</div>
+                
                 <div className="stat-desc">Terakhir update: {updateTime}</div>
             </div>
         </div>
