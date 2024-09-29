@@ -5,6 +5,7 @@ import Logo from '../asset/image/logotag.png'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import axios from 'axios'
+import { IoLogOutOutline } from "react-icons/io5";
 
 
 const Navbar = () => {
@@ -23,7 +24,7 @@ const Navbar = () => {
       const Logout = async () => {
         try {
           // Panggil API logout untuk menghapus cookie di server
-          const url = 'http://localhost:3000/api/admin/logout'
+          const url = process.env.NEXT_PUBLIC_BACKEND_URL + '/api/admin/logout'
           await axios.post(url);
       
           // Hapus localStorage
@@ -71,11 +72,11 @@ const Navbar = () => {
               <li><Link className={pathname === '/admin-side/home' && 'active'} href={'/admin-side/home'}>Home</Link></li>
               <li><Link className={pathname === '/admin-side/add-saksi' && 'active'} href={'/admin-side/add-saksi'}>Tambah-saksi</Link></li>
               <li><Link className={pathname === '/admin-side/aduan' && 'active'} href='/admin-side/aduan'>Aduan</Link></li>
-              <li><Link className={pathname === '/admin-side/laporan' && 'active'} href=''>Download</Link></li>
+              <li><Link className={pathname === '/admin-side/download' && 'active'} href='/admin-side/download'>Download</Link></li>
             </ul>
         </div>
         <div className="navbar-end">
-            <button onClick={Logout} className="btn">Keluar 👉🏼</button>
+            <button onClick={Logout} className="btn">Keluar <IoLogOutOutline /></button>
         </div>
     </div>
   )

@@ -12,7 +12,6 @@ const LeftMenu = () => {
   const [kampungordistrik, setKampungordistrik] = useAtom(distrikorkampung)
 
 
-
   // fetch data dsitrik pertamakasli
   useEffect(() => {
     const username = localStorage.getItem('username');
@@ -20,7 +19,7 @@ const LeftMenu = () => {
     const fetchDistrik = async () => {
       setLoading(true)
       try {
-        const url = 'http://localhost:3000/api/admin/get-semua-distrik'
+        const url = process.env.NEXT_PUBLIC_BACKEND_URL + '/api/admin/get-semua-distrik'
         const response = await axios.get(url, {
           headers:{
             'Accept':'application/json',
@@ -94,7 +93,7 @@ const LeftMenu = () => {
                           <li><span className={`${menu === itemKampung.namaKampung & kampungordistrik === 'kampung' && 'active'}`}  onClick={() => selectKampung(itemKampung.namaKampung)}>Total Kampung {itemKampung.namaKampung}</span></li>
                           {itemKampung.tps.length > 0 &&
                             itemKampung.tps.map((item) => (
-                            <li key={item.id}><span onClick={() => selectTps(item.id)}>TPS {item.nomorTps}</span></li>
+                            <li className={`${menu === item.id & kampungordistrik === 'tps' && 'active'}`} key={item.id}><span onClick={() => selectTps(item.id)}>TPS {item.nomorTps}</span></li>
                             ))
                           }
                         </ul>

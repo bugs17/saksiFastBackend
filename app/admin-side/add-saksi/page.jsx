@@ -1,6 +1,7 @@
 'use client'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import { MdDelete } from "react-icons/md";
 
 const Settings = () => {
   const [distrik, setDistrik] = useState([])
@@ -39,7 +40,7 @@ const Settings = () => {
     const passwordStored = localStorage.getItem('password');
     const fetchDistrik = async () => {
       try {
-        const url = 'http://localhost:3000/api/admin/all-distrik-only'
+        const url = process.env.NEXT_PUBLIC_BACKEND_URL + '/api/admin/all-distrik-only'
         const response = await axios.get(url, {
           headers:{
             'Accept':'application/json',
@@ -66,7 +67,7 @@ const Settings = () => {
     const fetchKampung = async () => {
       setLoadingKampung(true)
       try {
-        const url = 'http://localhost:3000/api/admin/all-kampung-only'
+        const url = process.env.NEXT_PUBLIC_BACKEND_URL + '/api/admin/all-kampung-only'
         const data = {
           'distrik':selectedDistrik
         }
@@ -119,7 +120,7 @@ const Settings = () => {
     try {
       const usernameStored = localStorage.getItem('username');
       const passwordStored = localStorage.getItem('password');
-      const url = 'http://localhost:3000/api/admin/add-saksi'
+      const url = process.env.NEXT_PUBLIC_BACKEND_URL + '/api/admin/add-saksi'
       const data = {
         'nama':nama,
         'distrik':selectedDistrik,
@@ -168,7 +169,7 @@ const Settings = () => {
       setDetailSaksi({nama:null})
       const usernameStored = localStorage.getItem('username');
       const passwordStored = localStorage.getItem('password');
-      const url = 'http://localhost:3000/api/admin/detail-saksi'
+      const url = process.env.NEXT_PUBLIC_BACKEND_URL + '/api/admin/detail-saksi'
       const data = {
         'namasaksi':namasaksi
       }
@@ -209,7 +210,7 @@ const Settings = () => {
       try {
         const usernameStored = localStorage.getItem('username');
         const passwordStored = localStorage.getItem('password');
-        const url = 'http://localhost:3000/api/admin/hapus-saksi'
+        const url = process.env.NEXT_PUBLIC_BACKEND_URL + '/api/admin/hapus-saksi'
         const data = {
           'namasaksi':namasaksi
         }
@@ -249,7 +250,7 @@ const Settings = () => {
                 listSaksi.map((item, index) => (
                   <li key={index} className='flex flex-row justify-between'>
                     <span onClick={getDetailSaksi} className={`cursor-pointer ${item.nama === detailSaksi.nama && 'active'}`}>{item.nama}</span>
-                    <span onClick={() => hapusSaksi(item.nama)} className='text-red-500 hover:bg-red-500 hover:text-white '>x</span>
+                    <span onClick={() => hapusSaksi(item.nama)} className='text-red-500 hover:bg-red-500 hover:text-white '><MdDelete /></span>
                   </li>
                 ))
                 }

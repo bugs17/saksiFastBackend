@@ -20,7 +20,7 @@ const getTotalSuaraKabupaten = async () => {
         });
 
         const updateTime = latestUpdate ? latestUpdate.updatedAt : null;
-        return NextResponse.json({"jumlah":totalSuaraKabupaten._sum.jumlahSuara || 0,"title":"Kabupaten", "updateTime":updateTime}, {status:200})
+        return NextResponse.json({"urlFotoSuara":null,"jumlah":totalSuaraKabupaten._sum.jumlahSuara || 0,"title":"Kabupaten", "updateTime":updateTime}, {status:200})
     } catch (error) {
         console.log("Terjadi error query", error)
         return NextResponse.json({'message':'Internal server error'}, {status:500})
@@ -58,7 +58,7 @@ const getTotalSuaraDistrik = async (distrikParam) => {
 
         const updateTime = latestUpdate ? latestUpdate.updatedAt : null;
 
-        return NextResponse.json({"jumlah":jumlahSuara._sum.jumlahSuara || 0, "title":`Distrik ${distrik.namaDistrik}`, "updateTime":updateTime},{status:200})
+        return NextResponse.json({"urlFotoSuara":null,"jumlah":jumlahSuara._sum.jumlahSuara || 0, "title":`Distrik ${distrik.namaDistrik}`, "updateTime":updateTime},{status:200})
     } catch (error) {
         console.log("Terjadi error query", error)
         return NextResponse.json({'message':'Internal server error'}, {status:500})
@@ -87,7 +87,7 @@ const getTotalSuaraKampung = async (kampungParam) => {
     });
 
     const updateTime = latestUpdate ? latestUpdate.updatedAt : null;
-    return NextResponse.json({"jumlah":jumlahSuara._sum.jumlahSuara || 0, "title": `Kampung ${kampungParam}`, "updateTime":updateTime})
+    return NextResponse.json({"urlFotoSuara":null,"jumlah":jumlahSuara._sum.jumlahSuara || 0, "title": `Kampung ${kampungParam}`, "updateTime":updateTime})
 }
 
 const getTotalSuaraTps = async (idTps) => {
@@ -112,7 +112,7 @@ const getTotalSuaraTps = async (idTps) => {
 
         const updateTime = latestUpdate ? latestUpdate.updatedAt : null;
 
-        return NextResponse.json({"jumlah":totalSuara.jumlahSuara,"title":`TPS ${totalSuara.nomorTps} Kampung ${totalSuara.kampung.namaKampung}`,"updateTime":updateTime}, {status:200})
+        return NextResponse.json({"urlFotoSuara":totalSuara.urlFotoSuara,"jumlah":totalSuara.jumlahSuara,"title":`TPS ${totalSuara.nomorTps} Kampung ${totalSuara.kampung.namaKampung}`,"updateTime":updateTime}, {status:200})
     } catch (error) {
         console.log("Terjadi error query", error)
         return NextResponse.json({'message':'Internal server error'}, {status:500})

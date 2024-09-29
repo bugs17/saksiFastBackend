@@ -1,8 +1,8 @@
+import Image from 'next/image'
 import React from 'react'
 
 
-const TotalKabupaten = ({jumlah, title, updateTime, loading}) => {
-
+const TotalKabupaten = ({jumlah, title, updateTime, fotoSuara}) => {
   
   
   return (
@@ -18,15 +18,20 @@ const TotalKabupaten = ({jumlah, title, updateTime, loading}) => {
     //     </div>
     // </div>
     <div className='flex flex-1 w-auto'>
-        <div>
-        <div className="stats stats-vertical shadow w-auto h-80">
-            <div className="stat items-center justify-center flex flex-col">
-                <div className="stat-title ">Total suara {title}</div>
-                <div className="stat-value font-bold text-9xl text-primary">{jumlah}</div>
-                
-                <div className="stat-desc">Terakhir update: {updateTime}</div>
+        <div className='flex flex-col justify-center items-center gap-3'>
+          <div className="stats  stats-vertical shadow w-auto h-80">
+              <div className="stat items-center justify-center flex flex-col">
+                  <div className="stat-title ">Total suara {title}</div>
+                  <div className="stat-value font-bold text-9xl text-primary">{jumlah}</div>
+                  
+                  <div className="stat-desc">Terakhir update: {updateTime}</div>
+              </div>
+          </div>
+          {fotoSuara !== null &&
+            <div className=' border-2 border-black mt-5'>
+              <Image alt='gambar-aduan' height={500} width={500} src={fotoSuara} />
             </div>
-        </div>
+          }
         </div>
     </div>
   )

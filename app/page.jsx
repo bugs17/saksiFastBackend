@@ -4,6 +4,7 @@ import Logo from '../app/asset/image/logotag.png'
 import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { TfiAndroid } from "react-icons/tfi";
 
 
 export default function Login() {
@@ -22,7 +23,7 @@ export default function Login() {
     }
     setLoading(true)
     try {
-      const url = 'http://localhost:3000/api/admin/login'
+      const url = process.env.NEXT_PUBLIC_BACKEND_URL + '/api/admin/login'
       const data = {
         username,
         password,
@@ -47,9 +48,11 @@ export default function Login() {
 
   return (
     <main  className="justify-center items-center flex flex-1 gap-20 flex-col h-screen w-screen ">
+      
       <div className="justify-center items-center flex flex-col gap-2">
         <Image draggable={false} alt="Logo" src={Logo} height={200} width={200} />
       </div>
+      <div className="hidden md:block">
       <form onSubmit={handleLogin} className="flex gap-6 flex-col">
         <label className="input input-bordered flex items-center gap-2">
           <svg
@@ -91,6 +94,15 @@ export default function Login() {
         </div>
       )
       }
+      </div>
+
+      <div className="block md:hidden">
+                <button className="btn btn-primary text-white">
+          SaksiFast
+          <TfiAndroid  />
+        </button>
+          
+      </div>
     </main>
   )
 }
