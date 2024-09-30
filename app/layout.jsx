@@ -1,3 +1,4 @@
+import Provider from "./context/Provider";
 import "./globals.css";
 
 
@@ -13,7 +14,9 @@ export default function RootLayout({ children }) {
   return (
     <html data-theme='retro' className="bg-[#ece3ca]" lang="id">
       <body>
-        {children}
+        <Provider>
+          {children}
+        </Provider>
       </body>
     </html>
   );

@@ -12,6 +12,7 @@ export const POST = async (req) => {
     const kampung = body.kampung
     const username = body.username
     const password = body.password
+    const hp = body.hp
 
 
     const usernameAdmin = headers.get('usernameAdmin')
@@ -40,6 +41,7 @@ export const POST = async (req) => {
                 username:username,
                 password:password,
                 nama:nama,
+                telp:hp,
                 tps:{
                     create:{
                         nomorTps:noTps,

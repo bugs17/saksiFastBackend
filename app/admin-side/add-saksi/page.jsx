@@ -17,6 +17,7 @@ const Settings = () => {
   const [noTps, setNoTps] = useState('')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [hp, setHp] = useState('')
 
   const [listSaksi, setListSaksi] = useState([])
   const [sukesesMsg, setSuksesMsg] = useState(false)
@@ -27,7 +28,8 @@ const Settings = () => {
     kampung: null,
     noTps:null,
     username: null,
-    password:null
+    password:null,
+    hp:null
   })
 
 
@@ -112,7 +114,7 @@ const Settings = () => {
 
   // functon menambahkan saksi baru
   const handleSubmit = async () => {
-    if (selectedDistrik === '' || selectedKampung === '' || nama === '' || noTps === '' || username === '' || password === '') {
+    if (selectedDistrik === '' || selectedKampung === '' || nama === '' || noTps === '' || username === '' || password === '' || hp === '') {
       return alert("Lengkapi data saksi sebelum kirim 🥱")
     }
     setLoadingSubmit(true)
@@ -127,7 +129,8 @@ const Settings = () => {
         'kampung':selectedKampung,
         'noTps':noTps,
         'username':username,
-        'password':password
+        'password':password,
+        'hp':hp
       }
 
       const response = await axios.post(url, data, {
@@ -149,6 +152,7 @@ const Settings = () => {
         setSelectedKampung('')
         setKampung([])
         setSuksesMsg(true)
+        window.location.reload()
       }
     } catch (error) {
       alert('Gagal menambahkan saksi. coba lagi! jika terus terjadi segera hubungi admin')
@@ -188,7 +192,8 @@ const Settings = () => {
           kampung:response.data.distrik.namaKampung,
           noTps:response.data.detailSaksi.tps.nomorTps,
           username:response.data.detailSaksi.username,
-          password:response.data.detailSaksi.password
+          password:response.data.detailSaksi.password,
+          hp:response.data.detailSaksi.telp
         })
       }
     } catch (error) {
@@ -248,7 +253,7 @@ const Settings = () => {
                 {listSaksi.length > 0 
                 &&
                 listSaksi.map((item, index) => (
-                  <li key={index} className='flex flex-row justify-between'>
+                  <li key={item.id} className='flex flex-row justify-between'>
                     <span onClick={getDetailSaksi} className={`cursor-pointer ${item.nama === detailSaksi.nama && 'active'}`}>{item.nama}</span>
                     <span onClick={() => hapusSaksi(item.nama)} className='text-red-500 hover:bg-red-500 hover:text-white '><MdDelete /></span>
                   </li>
@@ -267,6 +272,10 @@ const Settings = () => {
           <label className="input input-bordered flex items-center gap-2 input-sm max-w-xs">
             <span className='text-primary'>Nama</span>
             <input onChange={(e) => setNama(e.target.value)} value={nama} type="text" className="grow" placeholder="Nama saksi" />
+          </label>
+          <label className="input input-bordered flex items-center gap-2 input-sm max-w-xs">
+            <span className='text-primary'>No Hp</span>
+            <input onChange={(e) => { const value = e.target.value; if (/^\d*$/.test(value)){setHp(value)} }} value={hp} type="text" className="grow" placeholder="Nomor Hp" />
           </label>
           <select disabled={distrik.length === 0} onChange={handleSelectDistrik} className="select select-bordered w-full max-w-xs select-sm">
             <option disabled selected>Distrik?</option>
@@ -324,6 +333,7 @@ const Settings = () => {
           {detailSaksi.nama !== null &&
             <div className='flex flex-col gap-3'>
               <span className='text-xs text-slate-400'>Nama: <span className='text-black'>{detailSaksi.nama}</span></span>
+              <span className='text-xs text-slate-400'>No Hp: <span className='text-black'>{detailSaksi.hp}</span></span>
               <span className='text-xs text-slate-400'>Distrik: <span className='text-black'>{detailSaksi.distrik}</span></span>
               <span className='text-xs text-slate-400'>Kampung: <span className='text-black'>{detailSaksi.kampung}</span></span>
               <span className='text-xs text-slate-400'>No TPS: <span className='text-black'>{detailSaksi.noTps}</span></span>

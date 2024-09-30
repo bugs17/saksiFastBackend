@@ -51,6 +51,7 @@ const Home = () => {
   const [showAlert, setShowAlert] = useState(false)
   const [loadingSubmit, setLoadingSubmit] = useState(false)
   const [idTps, setIdTps] = useState()
+  const [file, setFile] = useState(null)
 
   const [counter, setCounter] = useState(0)
 
@@ -229,17 +230,22 @@ const Home = () => {
       try {
         const usernameStored = localStorage.getItem('username');
         const passwordStored = localStorage.getItem('password');
-        const url = 'http://localhost:3000/api/admin/add-suara'
-        const data = {
-          'idTps':parseInt(idTps),
-          'jumlahSuara':parseInt(jumlahSuara)
+        const url = process.env.NEXT_PUBLIC_BACKEND_URL + '/api/admin/add-suara'
+        
+        const form = new FormData()
+        form.append('idTps', parseInt(idTps))
+        form.append('jumlahSuara', parseInt(jumlahSuara))
+        if (file !== null ) {
+          form.append('file', file)
+        }else{
+          form.append('file', 'empty')
         }
-        const response = await axios.post(url, data,{
+        const response = await axios.post(url, form,{
           headers:{
             'username':usernameStored,
             'password':passwordStored,
             'role':'admin',
-            'Content-Type':'application/json'
+            'Content-Type':'multipart/form-data',
           }
         })
         if (response.status === 200) {
@@ -250,6 +256,7 @@ const Home = () => {
           setKampung([])
           setTps([])
           setIdTps(null)
+          setFile(null)
           setCounter(prevState => prevState + 1)
           setShowAlert(true)
           window.location.reload()
@@ -308,6 +315,13 @@ const Home = () => {
 
             <label className="input input-bordered flex items-center gap-1 input-sm max-w-xs">
               <input  onChange={(e) => { const value = e.target.value; if (/^\d*$/.test(value)){setJumlahSuara(value)} }} value={jumlahSuara} type="text" className="grow" placeholder="Jumlah Suara" />
+            </label>
+
+            <label className="form-control w-full max-w-xs">
+              <div className="label">
+                <span className="label-text text-slate-400 text-xs">Foto C1</span>
+              </div>
+              <input onChange={(e) => setFile(e.target.files[0])} type="file" accept="image/*" placeholder='Foto C1' className="file-input file-input-bordered file-input-sm w-full max-w-xs" />
             </label>
 
             <div className='md:px-8 justify-center items-center flex md:pt-5'>

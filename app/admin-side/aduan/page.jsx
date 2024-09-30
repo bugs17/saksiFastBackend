@@ -27,7 +27,6 @@ const Aduan = () => {
                 })
                 if (response.status === 200) {
                     setListAduan([...response.data.aduan])
-                    console.log(response.data.aduan)
                 }
             } catch (error) {
                 console.log("Erooorrr", error)
@@ -64,7 +63,7 @@ const Aduan = () => {
 
         <div className='w-4/6 flex flex-col justify-start gap-10 items-center md:pt-16 md:pb-16 md:px-10 overflow-y-scroll'>
             {aduan !== null && 
-            <article class="prose flex flex-col gap-2">
+            <article className="prose flex flex-col gap-2">
                 <h1 className='text-primary'>Keterangan:</h1>
                 <p>
                     {aduan.keteranganAduan}

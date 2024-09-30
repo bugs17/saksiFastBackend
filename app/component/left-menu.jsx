@@ -12,7 +12,7 @@ const LeftMenu = () => {
   const [kampungordistrik, setKampungordistrik] = useAtom(distrikorkampung)
 
 
-  // fetch data dsitrik pertamakasli
+  // fetch data dsitrik pertamakali
   useEffect(() => {
     const username = localStorage.getItem('username');
     const password = localStorage.getItem('password');

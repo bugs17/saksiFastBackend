@@ -6,11 +6,12 @@ import fs from "fs/promises";
 import { prisma } from "@/app/lib/db";
 
 export const GET = async (req) => {
-    
+
     const headers = req.headers;
     const username = headers.get('username')
     const password = headers.get('password')
     const role = headers.get('role')
+
     // mengambil user dan validasi credential
     try {
         const user = await prisma.user.findFirst({
@@ -18,16 +19,16 @@ export const GET = async (req) => {
                 username:username
             }
         })
+
         if (!user || password !== user.password || role !== user.role) {
-            console.log('disini')
             return NextResponse.json({'message':'Unauthorized'}, {status:401})
         }
     } catch (error) {
         return NextResponse.json({'message':'Unauthorized'}, {status:401})
     }
 
-    const folderPath = join(process.cwd(), 'public/c1'); // Path ke folder yang ingin dikompres
-    const zipFilePath = join(process.cwd(), 'public/c1.zip'); // Path untuk file ZIP yang dihasilkan
+    const folderPath = join(process.cwd(), 'public/aduan'); // Path ke folder yang ingin dikompres
+    const zipFilePath = join(process.cwd(), 'public/aduan.zip'); // Path untuk file ZIP yang dihasilkan
 
     // Menghapus file ZIP jika sudah ada
     try {
@@ -63,7 +64,7 @@ export const GET = async (req) => {
     return new NextResponse(fileStream, {
         headers: {
             'Content-Type': 'application/zip',
-            'Content-Disposition': 'attachment; filename="c1.zip"',
+            'Content-Disposition': 'attachment; filename="aduan.zip"',
         },
     });
 };

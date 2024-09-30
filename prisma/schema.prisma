@@ -39,6 +39,7 @@ model Saksi {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   nama      String
+  telp      String?
   username  String   @unique
   password  String
   tps       Tps?
@@ -50,11 +51,12 @@ model Tps {
   updatedAt   DateTime @updatedAt
   nomorTps    String
   kampungId   Int
+  submit      Boolean @default(false)
   jumlahSuara Int      @default(0)
   aduan       Boolean @default(false)
   keteranganAduan       String?
   fotoAduan   String?
-  urlFotoSuara   String?
+  urlFotoSuara   String @default("")
   saksiId     Int      @unique
   saksi       Saksi    @relation(fields: [saksiId], references: [id], onDelete: Cascade)
   kampung     Kampung  @relation(fields: [kampungId], references: [id], onDelete: Cascade)

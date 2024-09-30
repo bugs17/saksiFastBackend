@@ -20,11 +20,11 @@ export const POST = async (req) => {
 
     const data = await req.json()
     const idTps = data.idTps
-    const jumlahSuara = data.jumlahSuara
+    const ketAduan = data.ketAduan
     const usernameSaksi = data.username
     const passwordSaksi = data.password
     const roleSaksi = data.role
-    const fotoSuara = data.fotoSuara
+    const fotoAduan = data.fotoAduan
     
 
     
@@ -56,17 +56,17 @@ export const POST = async (req) => {
         return NextResponse.json({ 'message': 'Unauthorized' }, { status: 401 });
     }
 
-    if(fotoSuara !== null) {
+    if(fotoAduan !== null) {
         
         // Mengolah foto
-        const bytes = decode(data.fotoSuara)
+        const bytes = decode(data.fotoAduan)
         // const bytes = await fotoSuara.arrayBuffer();
         const bufferFile = Buffer.from(bytes);
         const namaSaksi = user.nama;
         
         // Mendapatkan nama kampung untuk membuat folder
         const namaKampung = user.tps.kampung.namaKampung; // Pastikan ini sesuai dengan struktur data
-        const folderPath = join(process.cwd(), 'public/c1', namaKampung);
+        const folderPath = join(process.cwd(), 'public/aduan', namaKampung);
         
         // Membuat folder jika belum ada
         await mkdir(folderPath, { recursive: true });
@@ -75,7 +75,7 @@ export const POST = async (req) => {
         const filePath = join(folderPath, namaFile); // Gabungkan path folder dan nama file
         await writeFile(filePath, bufferFile);
     
-        const urlFotoSuara = `/c1/${namaKampung}/${namaFile}`; // Update URL foto sesuai dengan struktur folder
+        const urlFotoAduan = `/aduan/${namaKampung}/${namaFile}`; // Update URL foto sesuai dengan struktur folder
     
         // Update data suara dan juga foto url foto c1
         try {
@@ -84,14 +84,14 @@ export const POST = async (req) => {
                     id: parseInt(idTps)
                 },
                 data: {
-                    jumlahSuara: parseInt(jumlahSuara),
-                    urlFotoSuara: urlFotoSuara,
-                    submit:true
+                    fotoAduan:urlFotoAduan,
+                    keteranganAduan:ketAduan,
+                    aduan:true
                 }
             });
             return NextResponse.json({ 'data': data }, { status: 200 });
         } catch (error) {
-            console.log("Error saat update TPS:", error);
+            console.log("Error saat update Aduan:", error);
             return NextResponse.json({ 'message': 'Internal server error' }, { status: 500 });
         }
     }else{
@@ -101,13 +101,13 @@ export const POST = async (req) => {
                     id: parseInt(idTps)
                 },
                 data: {
-                    jumlahSuara:parseInt(jumlahSuara),
-                    submit:true
+                    keteranganAduan:ketAduan,
+                    aduan:true
                 }
             });
             return NextResponse.json({ 'data': data }, { status: 200 });
         } catch (error) {
-            console.log("Error saat update TPS:", error);
+            console.log("Error saat update Aduan:", error);
             return NextResponse.json({ 'message': 'Internal server error' }, { status: 500 });
         }
     }

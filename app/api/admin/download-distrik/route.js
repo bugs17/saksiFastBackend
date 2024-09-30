@@ -3,6 +3,27 @@ import { NextResponse } from "next/server";
 import * as XLSX from 'xlsx';
 
 export const GET = async (req) => {
+    
+    const headers = req.headers;
+    const username = headers.get('username')
+    const password = headers.get('password')
+    const role = headers.get('role')
+
+    // mengambil user dan validasi credential
+    try {
+        const user = await prisma.user.findFirst({
+            where:{
+                username:username
+            }
+        })
+
+        if (!user || password !== user.password || role !== user.role) {
+            return NextResponse.json({'message':'Unauthorized'}, {status:401})
+        }
+    } catch (error) {
+        return NextResponse.json({'message':'Unauthorized'}, {status:401})
+    }
+
     const distrik = await prisma.distrik.findMany({
         include: {
             kampung: {

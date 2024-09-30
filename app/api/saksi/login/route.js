@@ -15,17 +15,26 @@ export const POST = async (req) => {
         const user = await prisma.saksi.findFirst({
             where:{
                 username:usernameSaksi
+            },
+            include:{
+                tps:{
+                    include:{
+                        kampung:{
+                            include:{
+                                distrik:true
+                            }
+                        }
+                    }
+                }
             }
         })
         if (!user || passwordSaksi !== user.password || roleSaksi !== 'saksi') {
             return NextResponse.json({'message':'Unauthorized'}, {status:401})
         }
-
+        return NextResponse.json({"user":user}, {status:200})
     } catch (error) {
         console.log("Error validasi", error)
         return NextResponse.json({'message':'Unauthorized'}, {status:401})
     }
 
-
-    return NextResponse.json({"message":"sukses"}, {status:200})
 }

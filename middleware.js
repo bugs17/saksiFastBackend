@@ -6,8 +6,10 @@ export function middleware(request) {
     const token = request.cookies.get('status');
     const currentUrl = request.nextUrl.pathname;    
     
-    console.log('Token:', token?.value); // Tambahkan log untuk debugging
-
+    // Jika rute mengarah ke folder gambar, izinkan akses tanpa autentikasi
+    if (currentUrl.startsWith('/c1/')) {
+        return NextResponse.next();
+    }
     // Jika token tidak ada (user tidak authenticated)
     if (!token || token.value !== 'authenticated') {
         // Hanya redirect ke login jika bukan di halaman login (menghindari loop)
