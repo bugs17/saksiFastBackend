@@ -65,7 +65,7 @@ const Home = () => {
     const getJumlahSuara = async () => {
       setLoading(true)
       try {
-        const url = 'http://localhost:3000/api/admin/total-suara'
+        const url =  process.env.NEXT_PUBLIC_BACKEND_URL + '/api/admin/total-suara'
         const data = {
           "menu":menu,
           "kampungordistrik": kampungordistrik
@@ -106,7 +106,7 @@ const Home = () => {
     const passwordStored = localStorage.getItem('password');
     const fetchDistrik = async () => {
       try {
-        const url = 'http://localhost:3000/api/admin/all-distrik-only'
+        const url = process.env.NEXT_PUBLIC_BACKEND_URL + '/api/admin/all-distrik-only'
         const response = await axios.get(url, {
           headers:{
             'Accept':'application/json',
@@ -132,7 +132,7 @@ const Home = () => {
     const fetchKampung = async () => {
       setLoadingKampung(true)
       try {
-        const url = 'http://localhost:3000/api/admin/all-kampung-only'
+        const url = process.env.NEXT_PUBLIC_BACKEND_URL + '/api/admin/all-kampung-only'
         const data = {
           'distrik':selectedDistrik
         }
@@ -165,7 +165,7 @@ const Home = () => {
     const fetchTps = async () => {
       setLoadingTps(true)
       try {
-        const url = 'http://localhost:3000/api/admin/all-tps-by-kampung'
+        const url = process.env.NEXT_PUBLIC_BACKEND_URL + '/api/admin/all-tps-by-kampung'
         const data = {
           'distrik':selectedDistrik,
           'kampung':selectedKampung,
