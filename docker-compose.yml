@@ -10,7 +10,7 @@ services:
       - '5554:5555'
     volumes:
       - ./realDB:/app/realDB
-      - static-saksi:/app/public
+      - ./app/public:/app/public
     command: "npm run start"
     restart: always
 
