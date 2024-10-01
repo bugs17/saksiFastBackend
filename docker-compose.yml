@@ -10,7 +10,7 @@ services:
       - '5554:5555'
     volumes:
       - ./realDB:/app/realDB
-      - ./app/public:/app/public
+      - ./public:/app/public
     command: "npm run start"
     restart: always
 
