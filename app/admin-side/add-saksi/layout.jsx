@@ -3,6 +3,7 @@ import React from 'react'
 
 const SettingsLayout = ({children}) => {
   return (
+    
     <>
     <Navbar />
     {children}
