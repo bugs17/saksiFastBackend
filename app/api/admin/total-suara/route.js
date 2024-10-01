@@ -120,8 +120,7 @@ const getTotalSuaraTps = async (idTps) => {
 }
 
 export const POST = async (req) => {
-    const { searchParams } = new URL(request.url);
-    const forceRefresh = searchParams.get('forceRefresh');
+    
     const headers = req.headers;
     const body = await req.json()
 

@@ -10,6 +10,6 @@ services:
       - '5554:5555'
     volumes:
       - ./realDB:/app/realDB
-      - ./public:/app/public
+      - ./upload:/app/upload
     command: "npm run start"
     restart: always

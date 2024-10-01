@@ -66,7 +66,7 @@ export const POST = async (req) => {
         
         // Mendapatkan nama kampung untuk membuat folder
         const namaKampung = user.tps.kampung.namaKampung; // Pastikan ini sesuai dengan struktur data
-        const folderPath = join(process.cwd(), 'public/aduan', namaKampung);
+        const folderPath = join(process.cwd(), 'upload/aduan', namaKampung);
         
         // Membuat folder jika belum ada
         await mkdir(folderPath, { recursive: true });
@@ -75,7 +75,7 @@ export const POST = async (req) => {
         const filePath = join(folderPath, namaFile); // Gabungkan path folder dan nama file
         await writeFile(filePath, bufferFile);
     
-        const urlFotoAduan = `/aduan/${namaKampung}/${namaFile}`; // Update URL foto sesuai dengan struktur folder
+        const urlFotoAduan = `/upload/aduan/${namaKampung}/${namaFile}`; // Update URL foto sesuai dengan struktur folder
     
         // Update data suara dan juga foto url foto c1
         try {
