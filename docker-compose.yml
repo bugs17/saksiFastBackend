@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '3004:3000'
+      - '5554:5555'
+    volumes:
+      - ./realDB:/app/realDB
+      - static-saksi:/app/public
+    command: "npm run start"
+    restart: always
+
+volumes:
+  static-saksi:
