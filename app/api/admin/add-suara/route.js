@@ -48,7 +48,7 @@ export const POST = async (req) => {
         const bytes = await file.arrayBuffer();
         const bufferFile = Buffer.from(bytes);
         
-        const folderPath = join(process.cwd(), 'upload/c1', 'admin');
+        const folderPath = join(process.cwd(), 'public/c1', 'admin');
         
         // Membuat folder jika belum ada
         await mkdir(folderPath, { recursive: true });
@@ -57,7 +57,7 @@ export const POST = async (req) => {
         const filePath = join(folderPath, namaFile); // Gabungkan path folder dan nama file
         await writeFile(filePath, bufferFile);
 
-        const urlFoto = `/upload/c1/admin/${namaFile}`; // Update URL foto sesuai dengan struktur folder
+        const urlFoto = `/c1/admin/${namaFile}`; // Update URL foto sesuai dengan struktur folder
 
         try {
             await prisma.tps.update({

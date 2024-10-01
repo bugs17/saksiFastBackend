@@ -1,5 +1,7 @@
 import { prisma } from "@/app/lib/db";
 import { NextResponse } from "next/server"
+import { readFile } from 'fs/promises';
+import { join } from 'path';
 
 
 const getTotalSuaraKabupaten = async () => {
@@ -111,8 +113,21 @@ const getTotalSuaraTps = async (idTps) => {
         });
 
         const updateTime = latestUpdate ? latestUpdate.updatedAt : null;
+        const imageUrl = totalSuara.urlFotoSuara; // Ambil URL gambar dari database
+        const filePath = join(process.cwd(), 'public', imageUrl); // Sesuaikan dengan path folder public
+        const imageBuffer = await readFile(filePath); // Baca file gambar
 
-        return NextResponse.json({"urlFotoSuara":totalSuara.urlFotoSuara,"jumlah":totalSuara.jumlahSuara,"title":`TPS ${totalSuara.nomorTps} Kampung ${totalSuara.kampung.namaKampung}`,"updateTime":updateTime}, {status:200})
+        return NextResponse.json({
+            "urlFotoSuara": imageBuffer.toString('base64'), // Mengirim gambar dalam format base64
+            "jumlah": totalSuara.jumlahSuara,
+            "title": `TPS ${totalSuara.nomorTps} Kampung ${totalSuara.kampung.namaKampung}`,
+            "updateTime": updateTime
+        }, {
+            status: 200,
+            headers: {
+                'Content-Type': 'application/json' // Set header yang sesuai
+            }
+        });
     } catch (error) {
         console.log("Terjadi error query", error)
         return NextResponse.json({'message':'Internal server error'}, {status:500})

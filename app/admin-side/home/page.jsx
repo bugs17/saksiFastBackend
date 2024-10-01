@@ -83,6 +83,7 @@ const Home = () => {
         if (response.status === 200) {
           setTitle(response.data.title)
           setJumlah(response.data.jumlah)
+          
           setUrlFotoSuara(response.data.urlFotoSuara)
           if (response.data.updateTime !== null) {
             setUpdateTime(formatDate(response.data.updateTime))

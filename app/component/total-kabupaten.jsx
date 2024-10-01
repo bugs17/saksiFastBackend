@@ -1,9 +1,23 @@
+import { decode } from 'base64-arraybuffer';
 import Image from 'next/image'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 
 const TotalKabupaten = ({jumlah, title, updateTime, fotoSuara}) => {
-  
+  const [foto, setFoto] = useState(null)
+  useEffect(() => {
+    if (fotoSuara !== null) {
+      // Decode Base64 menjadi ArrayBuffer
+      const arrayBuffer = decode(fotoSuara);
+      // Buat URL objek dari ArrayBuffer
+      const blob = new Blob([arrayBuffer], { type: "image/png" });
+      const imageObjectUrl = URL.createObjectURL(blob);
+      setFoto(imageObjectUrl);
+
+      // Bersihkan URL objek ketika komponen di-unmount
+      return () => URL.revokeObjectURL(imageObjectUrl);
+    }
+  }, [fotoSuara]);
   
   return (
     // <div className='w-80 m-10 ' >
@@ -27,9 +41,9 @@ const TotalKabupaten = ({jumlah, title, updateTime, fotoSuara}) => {
                   <div className="stat-desc">Terakhir update: {updateTime}</div>
               </div>
           </div>
-          {fotoSuara !== null &&
+          {foto !== null &&
             <div className=' border-2 border-black mt-5'>
-              <Image alt='gambar-aduan' height={500} width={500} src={fotoSuara} unoptimized />
+              <Image alt='gambar-aduan' height={500} width={500} src={foto} />
             </div>
           }
         </div>

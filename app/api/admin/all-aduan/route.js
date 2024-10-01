@@ -62,5 +62,7 @@ export const GET = async (req) => {
         return NextResponse.json({"message":"No data"}, {status:404})
     }
 
+    
+
     return NextResponse.json({"aduan":semuaAduan}, {status:200})
 }

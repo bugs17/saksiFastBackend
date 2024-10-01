@@ -7,7 +7,10 @@ import React, { useEffect, useState } from 'react'
 const Aduan = () => {
 
     const [listAduan, setListAduan] = useState([])
-    const [aduan, setAduan] = useState(null)
+    const [aduan, setAduan] = useState({
+        "keterangan":null,
+        "fotoAduan":null
+    })
     const [saksi, setSaksi] = useState(null)
 
     useEffect(() => {
@@ -35,9 +38,42 @@ const Aduan = () => {
         getAllAduan()
     }, [])
 
-    const setDetailSaksiDanAduan = (item) => {
+    const [foto, setFoto] = useState(null)
+    useEffect(() => {
+        if (aduan.fotoAduan !== null) {
+        // Decode Base64 menjadi ArrayBuffer
+        const arrayBuffer = decode(aduan.fotoAduan);
+        // Buat URL objek dari ArrayBuffer
+        const blob = new Blob([arrayBuffer], { type: "image/png" });
+        const imageObjectUrl = URL.createObjectURL(blob);
+        setFoto(imageObjectUrl);
+
+        // Bersihkan URL objek ketika komponen di-unmount
+        return () => URL.revokeObjectURL(imageObjectUrl);
+        }
+    }, [aduan.fotoAduan]);
+
+    const setDetailSaksiDanAduan = async (item) => {
         setSaksi(item.saksi)
-        setAduan(item)
+        if (item.fotoAduan !== null) {
+            try {
+                const url = process.env.NEXT_PUBLIC_BACKEND_URL + '/api/admin/detail-aduan'
+                const data = {
+                    'url':item.fotoAduan
+                }
+                const response = await axios.post(url, data, {
+                    headers:{
+                        'Content-Type':'application/json'
+                    }
+                })
+                if (response.status === 200) {
+                    setAduan({fotoAduan:response.data.fotoAduan, keterangan:item.keteranganAduan})
+                }
+            } catch (error) {
+                
+            }
+        }
+        setAduan({fotoAduan:null, keterangan:tem.keteranganAduan})
     }
 
   return (
@@ -66,12 +102,12 @@ const Aduan = () => {
             <article className="prose flex flex-col gap-2">
                 <h1 className='text-primary'>Keterangan:</h1>
                 <p>
-                    {aduan.keteranganAduan}
+                    {aduan.keterangan}
                 </p>
 
                 <div className=' self-center border-2 border-black mt-5'>
-                    {aduan.fotoAduan !== null &&
-                        <Image alt='gambar-aduan' height={500} width={500} src={aduan.fotoAduan} />
+                    {foto !== null &&
+                        <Image alt='gambar-aduan' height={500} width={500} src={foto} />
                     }
                 </div>
                 
