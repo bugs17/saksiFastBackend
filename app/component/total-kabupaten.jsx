@@ -29,7 +29,7 @@ const TotalKabupaten = ({jumlah, title, updateTime, fotoSuara}) => {
           </div>
           {fotoSuara !== null &&
             <div className=' border-2 border-black mt-5'>
-              <Image alt='gambar-aduan' height={500} width={500} src={fotoSuara} />
+              <Image alt='gambar-aduan' height={500} width={500} src={fotoSuara} unoptimized />
             </div>
           }
         </div>
