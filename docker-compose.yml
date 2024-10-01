@@ -13,6 +13,3 @@ services:
       - ./public:/app/public
     command: "npm run start"
     restart: always
-
-volumes:
-  static-saksi:

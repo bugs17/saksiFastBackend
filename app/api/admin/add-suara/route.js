@@ -18,7 +18,8 @@ const generateUniqueFileName = () => {
 
 
 export const POST = async (req) => {
-
+    const { searchParams } = new URL(req.url);
+    const forceRefresh = searchParams.get('forceRefresh');
     const headers = req.headers;
     const body = await req.formData()
 
