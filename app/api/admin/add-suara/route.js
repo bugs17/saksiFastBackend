@@ -21,10 +21,10 @@ export const POST = async (req) => {
     
     const headers = req.headers;
     const body = await req.formData()
+    const file = body.get('file')
 
     const idTps = body.get('idTps')
     const jumlahSuara = body.get('jumlahSuara')
-    const file = body.get('file')
 
     const usernameAdmin = headers.get('username')
     const passwordAdmin = headers.get('password')

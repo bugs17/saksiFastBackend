@@ -1,36 +1,85 @@
 import { decode } from 'base64-arraybuffer';
+import { useAtom } from 'jotai';
 import Image from 'next/image'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import { distrikorkampung, isFotoUrl, menuTerpilih } from '../lib/globalState';
+import axios from 'axios';
 
 
-const TotalKabupaten = ({jumlah, title, updateTime, fotoSuara}) => {
+
+const FotocSatuComponen = () => {
+  const [menu, setMenu] = useAtom(menuTerpilih)
+  const [fotoUrl, setFotoUrl] = useAtom(isFotoUrl)
   const [foto, setFoto] = useState(null)
-  useEffect(() => {
-    if (fotoSuara !== null) {
-      // Decode Base64 menjadi ArrayBuffer
-      const arrayBuffer = decode(fotoSuara);
-      // Buat URL objek dari ArrayBuffer
-      const blob = new Blob([arrayBuffer], { type: "image/png" });
-      const imageObjectUrl = URL.createObjectURL(blob);
-      setFoto(imageObjectUrl);
+  const imageObjectUrlRef = useRef(null);
 
-      // Bersihkan URL objek ketika komponen di-unmount
-      return () => URL.revokeObjectURL(imageObjectUrl);
+
+  useEffect(() => {
+    const getFoto = async () => {
+      try {
+        const url = process.env.NEXT_PUBLIC_BACKEND_URL + '/api/admin/get-foto-c1'
+        const data = {
+          "idTps":parseInt(menu)
+        }
+        const response = await axios.post(url, data, {
+          headers:{
+            'Content-Type':'application/json'
+          }
+        })
+        if (response.status === 200) {
+          if (response.data.urlFotoSuara === null) {
+            setFotoUrl(false)
+            return
+          }
+          const arrayBuffer = decode(response.data.urlFotoSuara);
+          const blob = new Blob([arrayBuffer], { type: "image/png" });
+          const imageUrl = URL.createObjectURL(blob);
+          setFotoUrl(true)
+          if (imageObjectUrlRef.current) {
+            URL.revokeObjectURL(imageObjectUrlRef.current);
+            imageObjectUrlRef.current = null; // reset ke null setelah revoke
+          }
+
+          imageObjectUrlRef.current = imageUrl;
+          setFoto(imageUrl);
+        }
+      } catch (error) {
+        console.log("Gagal memanggil foto", error)
+      }
     }
-  }, [fotoSuara]);
-  
+
+    getFoto()
+
+    return () => {
+      if (imageObjectUrlRef.current) {
+        URL.revokeObjectURL(imageObjectUrlRef.current); // revoke URL saat komponen unmount
+        imageObjectUrlRef.current = null; // reset ke null setelah revoke
+      }
+    };
+  }, [menu])
+
+
   return (
-    // <div className='w-80 m-10 ' >
-    //     <div className='flex flex-col gap-2'>
-    //         <div className='justify-between flex'>
-    //         <span>Mandobo</span>
-    //         <span>300</span>
-    //         </div>
-    //         <div className='tooltip tooltip-right' data-tip="50% dari 600">
-    //         <progress className="progress h-6 w-100 rounded-sm" value={50} max="100"></progress>
-    //         </div>
-    //     </div>
-    // </div>
+    <>
+      {fotoUrl && foto !== null ? (
+        <div className='border-2 border-black mt-5'>
+          <Image alt='gambar-aduan' height={500} width={500} src={foto} />
+        </div>
+      ) : (
+        <></>
+      )}
+  </>
+  )
+}
+
+const TotalKabupaten = ({jumlah, title, updateTime}) => {
+  const [kampungordistrik, setKampungordistrik] = useAtom(distrikorkampung)
+  
+
+  
+
+
+  return (
     <div className='flex flex-1 w-auto'>
         <div className='flex flex-col justify-center items-center gap-3'>
           <div className="stats  stats-vertical shadow w-auto h-80">
@@ -41,11 +90,13 @@ const TotalKabupaten = ({jumlah, title, updateTime, fotoSuara}) => {
                   <div className="stat-desc">Terakhir update: {updateTime}</div>
               </div>
           </div>
-          {foto !== null &&
-            <div className=' border-2 border-black mt-5'>
-              <Image alt='gambar-aduan' height={500} width={500} src={foto} />
-            </div>
-          }
+            {kampungordistrik === 'tps' ?
+            
+            <FotocSatuComponen />
+            :
+            <div></div>
+            }
+            
         </div>
     </div>
   )

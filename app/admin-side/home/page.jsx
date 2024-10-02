@@ -33,7 +33,6 @@ const Home = () => {
   const [jumlah, setJumlah] = useState(0)
   const [title, setTitle] = useState('')
   const [updateTime, setUpdateTime] = useState('-')
-  const [urlFotoSuara, setUrlFotoSuara] = useState(null)
   const [menu, setMenu] = useAtom(menuTerpilih)
   const [kampungordistrik, setKampungordistrik] = useAtom(distrikorkampung)
 
@@ -66,6 +65,7 @@ const Home = () => {
       setLoading(true)
       try {
         const url =  process.env.NEXT_PUBLIC_BACKEND_URL + '/api/admin/total-suara'
+        
         const data = {
           "menu":menu,
           "kampungordistrik": kampungordistrik
@@ -83,8 +83,6 @@ const Home = () => {
         if (response.status === 200) {
           setTitle(response.data.title)
           setJumlah(response.data.jumlah)
-          
-          setUrlFotoSuara(response.data.urlFotoSuara)
           if (response.data.updateTime !== null) {
             setUpdateTime(formatDate(response.data.updateTime))
           }
@@ -280,7 +278,7 @@ const Home = () => {
       <div className='flex flex-row h-screen w-screen'>
         <LeftMenu />
         <HomeContent>
-          <TotalKabupaten jumlah={jumlah} title={title} updateTime={updateTime} fotoSuara={urlFotoSuara} />
+          <TotalKabupaten jumlah={jumlah} title={title} updateTime={updateTime} />
         </HomeContent>
         <div className='w-1/6 shadow max-w-lg overflow-y-scroll md:pt-5'>
           <div className='items-center justify-center flex md:mb-5'>
