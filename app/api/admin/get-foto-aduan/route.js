@@ -8,7 +8,6 @@ export const POST = async (req) => {
 
     const body = await req.json()
     const idTps = body.idTps
-    console.log("id tps",idTps)
 
 
     try {
@@ -19,7 +18,7 @@ export const POST = async (req) => {
         })
         
 
-        const imageUrl = totalSuara.urlFotoSuara; // Ambil URL gambar dari database
+        const imageUrl = totalSuara.fotoAduan; // Ambil URL gambar dari database
         if (imageUrl === '') {
             return NextResponse.json({"urlFotoSuara": null}, {status:200})
         }
@@ -27,8 +26,8 @@ export const POST = async (req) => {
         const imageBuffer = await readFile(filePath); // Baca file gambar
 
         return NextResponse.json({
-            "urlFotoSuara": imageBuffer.toString('base64') // Mengirim gambar dalam format base64
-            
+            "urlFotoAduan": imageBuffer.toString('base64'), // Mengirim gambar dalam format base64
+            "keterangan":totalSuara.keteranganAduan
         }, {
             status: 200,
             headers: {

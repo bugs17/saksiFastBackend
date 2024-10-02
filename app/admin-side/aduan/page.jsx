@@ -1,6 +1,7 @@
 
 'use client'
 import axios from 'axios'
+import { decode } from 'base64-arraybuffer'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 
@@ -12,6 +13,7 @@ const Aduan = () => {
         "fotoAduan":null
     })
     const [saksi, setSaksi] = useState(null)
+    const [foto, setFoto] = useState(null)
 
     useEffect(() => {
         const usernameStored = localStorage.getItem('username');
@@ -36,30 +38,22 @@ const Aduan = () => {
             }
         }
         getAllAduan()
+
+        return () => {
+            if (foto) {
+                URL.revokeObjectURL(foto); // membersihkan URL object lama
+            }
+        }
     }, [])
 
-    const [foto, setFoto] = useState(null)
-    useEffect(() => {
-        if (aduan.fotoAduan !== null) {
-        // Decode Base64 menjadi ArrayBuffer
-        const arrayBuffer = decode(aduan.fotoAduan);
-        // Buat URL objek dari ArrayBuffer
-        const blob = new Blob([arrayBuffer], { type: "image/png" });
-        const imageObjectUrl = URL.createObjectURL(blob);
-        setFoto(imageObjectUrl);
-
-        // Bersihkan URL objek ketika komponen di-unmount
-        return () => URL.revokeObjectURL(imageObjectUrl);
-        }
-    }, [aduan.fotoAduan]);
-
+    
     const setDetailSaksiDanAduan = async (item) => {
         setSaksi(item.saksi)
         if (item.fotoAduan !== null) {
             try {
-                const url = process.env.NEXT_PUBLIC_BACKEND_URL + '/api/admin/detail-aduan'
+                const url = process.env.NEXT_PUBLIC_BACKEND_URL + '/api/admin/get-foto-aduan'
                 const data = {
-                    'url':item.fotoAduan
+                    'idTps':parseInt(item.id)
                 }
                 const response = await axios.post(url, data, {
                     headers:{
@@ -67,13 +61,21 @@ const Aduan = () => {
                     }
                 })
                 if (response.status === 200) {
-                    setAduan({fotoAduan:response.data.fotoAduan, keterangan:item.keteranganAduan})
+                    setAduan({keterangan:response.data.keterangan})
+                    const arrayBuffer = decode(response.data.urlFotoAduan);
+                    const blob = new Blob([arrayBuffer], { type: "image/png" });
+                    const imageUrl = URL.createObjectURL(blob);
+                    // Bersihkan URL object lama sebelum menyetel yang baru
+                    if (foto) {
+                        URL.revokeObjectURL(foto); // membersihkan URL object lama
+                    }
+                    setFoto(imageUrl)
                 }
             } catch (error) {
                 
             }
         }
-        setAduan({fotoAduan:null, keterangan:tem.keteranganAduan})
+        // setAduan({fotoAduan:null, keterangan:tem.keteranganAduan})
     }
 
   return (
