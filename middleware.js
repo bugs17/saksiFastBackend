@@ -7,7 +7,7 @@ export function middleware(request) {
     const currentUrl = request.nextUrl.pathname;    
     
     // Jika rute mengarah ke folder gambar, izinkan akses tanpa autentikasi
-    if (currentUrl.startsWith('/upload')) {
+    if (currentUrl.startsWith('/mobile')) {
         return NextResponse.next();
     }
     // Jika token tidak ada (user tidak authenticated)

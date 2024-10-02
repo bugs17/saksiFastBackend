@@ -97,11 +97,11 @@ export default function Login() {
       </div>
 
       <div className="block md:hidden">
-                <button className="btn btn-primary text-white">
+      <a className="btn btn-primary text-white" href="/mobile/saksiFast.apk" download>
           SaksiFast
           <TfiAndroid  />
-        </button>
-          
+      </a>
+        
       </div>
     </main>
   )
