@@ -44,11 +44,27 @@ export const POST = async (req) => {
         return NextResponse.json({'message':'Unauthorized'}, {status:401})
     }
 
+    let tps = "admin"
+    try {
+        const dataTps = await prisma.tps.findFirst({
+            where:{
+                id:parseInt(idTps)
+            },
+            include:{
+                kampung:true
+            }
+        })
+        tps = dataTps.kampung.namaKampung
+    } catch (error) {
+        console.log("gagal mengambil kampung")
+    }
+
     if (file !== 'empty') {
         const bytes = await file.arrayBuffer();
         const bufferFile = Buffer.from(bytes);
         
-        const folderPath = join(process.cwd(), 'public/c1', 'admin');
+        // const folderPath = join(process.cwd(), 'public/c1', 'admin);
+        const folderPath = join(process.cwd(), 'public/c1', tps);
         
         // Membuat folder jika belum ada
         await mkdir(folderPath, { recursive: true });
@@ -57,7 +73,8 @@ export const POST = async (req) => {
         const filePath = join(folderPath, namaFile); // Gabungkan path folder dan nama file
         await writeFile(filePath, bufferFile);
 
-        const urlFoto = `/c1/admin/${namaFile}`; // Update URL foto sesuai dengan struktur folder
+        // const urlFoto = `/c1/admin/${namaFile}`; // Update URL foto sesuai dengan struktur folder
+        const urlFoto = `/c1/${tps}/${namaFile}`; // Update URL foto sesuai dengan struktur folder
 
         try {
             await prisma.tps.update({
