@@ -5,7 +5,7 @@ import { join } from "path";
 import { mkdir } from "fs/promises";
 
 
-const generateUniqueFileName = () => {
+const generateUniqueFileName = (namaKampung, noTps) => {
     // Mengambil waktu saat ini dalam format ISO String
     const currentDateTime = new Date().toISOString();
   
@@ -13,7 +13,7 @@ const generateUniqueFileName = () => {
     const formattedDateTime = currentDateTime.replace(/[:.]/g, "-");
   
     // Format nama file menjadi "nomor-tps_namaSaksi_ISOString.png"
-    return `admin_${formattedDateTime}.png`;
+    return `${namaKampung}_${noTps}_${formattedDateTime}.png`;
 };
 
 
@@ -44,7 +44,8 @@ export const POST = async (req) => {
         return NextResponse.json({'message':'Unauthorized'}, {status:401})
     }
 
-    let tps = "admin"
+    let kampung = "admin"
+    let noTps;
     try {
         const dataTps = await prisma.tps.findFirst({
             where:{
@@ -54,7 +55,8 @@ export const POST = async (req) => {
                 kampung:true
             }
         })
-        tps = dataTps.kampung.namaKampung
+        kampung = dataTps.kampung.namaKampung
+        noTps = dataTps.nomorTps
     } catch (error) {
         console.log("gagal mengambil kampung")
     }
@@ -64,17 +66,18 @@ export const POST = async (req) => {
         const bufferFile = Buffer.from(bytes);
         
         // const folderPath = join(process.cwd(), 'public/c1', 'admin);
-        const folderPath = join(process.cwd(), 'public/c1', tps);
+        const folderPath = join(process.cwd(), 'public/c1', kampung);
         
         // Membuat folder jika belum ada
         await mkdir(folderPath, { recursive: true });
 
-        const namaFile = generateUniqueFileName(); // Dapatkan nama file unik
+        // const namaFile = generateUniqueFileName(); // Dapatkan nama file unik
+        const namaFile = generateUniqueFileName(kampung, noTps); // Dapatkan nama file unik
         const filePath = join(folderPath, namaFile); // Gabungkan path folder dan nama file
         await writeFile(filePath, bufferFile);
 
         // const urlFoto = `/c1/admin/${namaFile}`; // Update URL foto sesuai dengan struktur folder
-        const urlFoto = `/c1/${tps}/${namaFile}`; // Update URL foto sesuai dengan struktur folder
+        const urlFoto = `/c1/${kampung}/${namaFile}`; // Update URL foto sesuai dengan struktur folder
 
         try {
             await prisma.tps.update({
